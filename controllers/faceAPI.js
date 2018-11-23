@@ -1,6 +1,7 @@
 'use strict';
 
 const request = require('request');
+const chip_controller = require('controllers/chip');
 
 const subscriptionKey = 'a73967987a1741d2977359beea6a1059';
 const uriBaseDetect = 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect';
@@ -48,7 +49,7 @@ const sendVerifyRequest = (faceIds) => {
   return request.post(options);
 }
 
-const verifyFace = (image1, image2, res) => {
+const verifyFace = (image1, image2, res, chip_id) => {
   let promise1 = detectFaceFromImage(image1);
   let promise2 = detectFaceFromImage(image2);
   Promise.all([promise1, promise2]).then((faceIds) => {
@@ -58,7 +59,7 @@ const verifyFace = (image1, image2, res) => {
         if (error) {
           res.send(false);
         } else {
-          res.send(body.isIdentical)
+          chip_controller.exam_update_chip(res, chip_id, body.isIdentical)
         }
         // let jsonResponse = JSON.stringify(JSON.parse(body), null, '  ');
         // console.log('JSON Response\n');
