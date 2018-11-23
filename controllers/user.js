@@ -16,3 +16,14 @@ exports.verify_user = (req, res, next) => {
     }
   });
 };
+
+exports.user_exists =(req, res, next) => {
+  User.find(req.query.id, (err, user) => {
+    if (err) return next(err);
+    if (user) {
+      res.send(true);
+    } else {
+      res.send(false);
+    }
+  });
+};
