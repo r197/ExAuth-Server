@@ -10,7 +10,7 @@ const HOST = 'localhost';
 const MONGODB = 'mongodb://localhost:27017/cpen442_db';
 
 const user = require('./routes/user');
-const photo = require('./routes/photo');
+const exam = require('./routes/exam');
 const init_db = require('./routes/initDB');
 
 // App
@@ -18,7 +18,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use('/user', user);
-app.use('/photo', photo);
+app.use('/exam', exam);
 app.use('/init_db', init_db);
 app.get('/', (req, res) => {
   res.send("Hello world\n");

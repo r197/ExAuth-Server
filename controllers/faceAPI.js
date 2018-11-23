@@ -6,7 +6,7 @@ const subscriptionKey = 'a73967987a1741d2977359beea6a1059';
 const uriBaseDetect = 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect';
 const uriBaseVerify = 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0/verify';
 
-const detectFaceFromImage = (image, id) => {
+const detectFaceFromImage = (image) => {
   const params = {
     'returnFaceId': true
   };
@@ -21,7 +21,6 @@ const detectFaceFromImage = (image, id) => {
   };
   return new Promise((resolve, reject) => {
     request.post(options, (error, response, body) => {
-      console.log(id)
       if (error) {
         console.log(error)
         return reject(error);
@@ -50,14 +49,13 @@ const sendVerifyRequest = (faceIds) => {
 }
 
 const verifyFace = (image1, image2, res) => {
-  let promise1 = detectFaceFromImage(image1, "image1");
-  let promise2 = detectFaceFromImage(image2, "image2");
+  let promise1 = detectFaceFromImage(image1);
+  let promise2 = detectFaceFromImage(image2);
   Promise.all([promise1, promise2]).then((faceIds) => {
     if (faceIds[0] && faceIds[1]) {
       let results = sendVerifyRequest(faceIds);
       results.then((error, response, body) => {
         if (error) {
-          console.log("HERE2")
           res.send(false);
         } else {
           res.send(body.isIdentical)
