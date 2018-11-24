@@ -10,7 +10,7 @@ exports.verify_user = (req, res, next) => {
   User.findById(user_id, (err, user) => {
     if (err) return next(err);
     if (user) {
-      FaceAPI.verifyFace(user.photo, photo, res, chip_id)
+      FaceAPI.verifyFace(user.photo, photo, res, chip_id, user_id)
     } else {
       res.send(false);
     }

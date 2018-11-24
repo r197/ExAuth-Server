@@ -49,7 +49,7 @@ const sendVerifyRequest = (faceIds) => {
   return request.post(options);
 }
 
-const verifyFace = (image1, image2, res, chip_id) => {
+const verifyFace = (image1, image2, res, chip_id, student_id) => {
   let promise1 = detectFaceFromImage(image1);
   let promise2 = detectFaceFromImage(image2);
   Promise.all([promise1, promise2]).then((faceIds) => {
@@ -59,7 +59,7 @@ const verifyFace = (image1, image2, res, chip_id) => {
         if (error) {
           res.send(false);
         } else {
-          chip_controller.exam_update_chip(res, chip_id, body.isIdentical)
+          chip_controller.exam_update_chip(res, chip_id, student_id, body.isIdentical)
         }
         // let jsonResponse = JSON.stringify(JSON.parse(body), null, '  ');
         // console.log('JSON Response\n');

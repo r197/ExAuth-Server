@@ -10,9 +10,9 @@ exports.exam_create = (req, res, next) => {
       chips: [],
     }
   );
-  exam.save((err) => {
+  exam.save((err, exam) => {
     if (err) return next(err);
-    res.send("Successfully created exam");
+    res.send(exam._id);
   });
 }
 
@@ -24,13 +24,14 @@ exports.exam_add_chip = (req, res, next) => {
   })
   chip.save((err) => {
     if (err) return next(err);
+    console.log(req.body.exam_id)
     Exam.findByIdAndUpdate(req.body.exam_id,
       {$push: {chips: chip_id}}, (err, exam) => {
         if (err) return next(err);
         if (exam) {
-          res.send("Successfully added chip to exam");
+          res.send({valid: true, message: "Successfully added chip to exam"});
         } else {
-          res.send("Exam was not found");
+          res.send({valid: false, message: "Exam was not found"});
         }
       });
   });
@@ -39,7 +40,8 @@ exports.exam_add_chip = (req, res, next) => {
 exports.exam_all =(req, res, next) => {
   Exam.find({}, (err, exams) => {
     if (err) return next(err);
-    res.send(exams);
+    console.log(exams);
+    res.send({exams: exams});
   });
 };
 
@@ -51,12 +53,11 @@ exports.exam_check_chip =(req, res, next) => {
       if (exam.chips.indexOf(chip_id) > -1) {
         Chip.findById(chip_id, (err, chip) => {
           if (err) return next(err);
-          res.send({valid: chip.valid});
+          res.send({valid: chip.valid, message: "Student: " + chip.student_id});
         });
       } else {
         res.send({valid: false, message: "The chip is not part of the selected exam"});
       }
-      res.send(Response.createSuccessfulResponse(user));
     } else {
       res.send({valid: false, message: "The exam does not exist"});
     }
