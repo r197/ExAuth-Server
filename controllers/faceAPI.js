@@ -1,7 +1,7 @@
 'use strict';
 
 const request = require('request');
-const chip_controller = require('controllers/chip');
+const chip_controller = require('./chip');
 
 const subscriptionKey = 'a73967987a1741d2977359beea6a1059';
 const uriBaseDetect = 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect';
