@@ -9,11 +9,23 @@ exports.exam_create = (req, res, next) => {
     {
       name: req.body.name,
       chips: [],
+      isOpen: false
     }
   );
   exam.save((err, exam) => {
     if (err) return next(err);
     res.send(exam._id);
+  });
+}
+
+exports.exam_toggle = (req, res, next) => {
+  Exam.findById(req.body.exam_id, (err, exam) => {
+    if (err) return next(err);
+    exam.isOpen = !exam.isOpen;
+    Exam.findByIdAndUpdate(req.body.exam_id, exam, (err) => {
+      if (err) return next(err);
+      res.send({status: exam.isOpen});
+    });
   });
 }
 
@@ -35,6 +47,14 @@ exports.exam_add_chip = (req, res, next) => {
           res.send({valid: false, message: "Exam was not found"});
         }
       });
+  });
+};
+
+exports.exam_open =(req, res, next) => {
+  Exam.find({isOpen: true}, (err, exams) => {
+    if (err) return next(err);
+    console.log(exams);
+    res.send({exams: exams});
   });
 };
 

@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 
 // Constants
 const PORT = 8080;
-const HOST = 'localhost';
+const HOST = '172.20.10.2';
 const MONGODB = 'mongodb://localhost:27017/cpen442_db';
 
 const student = require('./routes/student');

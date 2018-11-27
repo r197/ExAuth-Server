@@ -57,7 +57,7 @@ const verifyFace = (image1, image2, res, chip_id, student_id) => {
     if (faceIds[0] && faceIds[1]) {
       let callback = (error, response, body) => {
         if (error) {
-          res.send(false);
+          res.send({valid: false, message: "An error has occurred"});
         } else {
           let jsonObj = JSON.parse(body);
           chip_controller.exam_update_chip(res, chip_id, student_id, jsonObj.isIdentical)
@@ -65,10 +65,10 @@ const verifyFace = (image1, image2, res, chip_id, student_id) => {
       }
       sendVerifyRequest(faceIds, callback);
     } else {
-      res.send(false)
+      res.send({valid: false, message: "An error has occurred"});
     }
   }).catch(() => {
-    res.send(false);
+    res.send({valid: false, message: "An error has occurred"});
   });
 }
 
