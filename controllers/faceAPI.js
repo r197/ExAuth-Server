@@ -26,46 +26,52 @@ const detectFaceFromImage = (image) => {
         console.log(error)
         return reject(error);
       }
-      let jsonResponse = JSON.stringify(JSON.parse(body), null, '  ');
-      console.log('JSON Response\n');
-      console.log(jsonResponse);
-
-      resolve(body.faceId);
+      let jsonObj = JSON.parse(body);
+      console.log(jsonObj[0].faceId);
+      resolve(jsonObj[0].faceId);
     })
   });
 }
 
-const sendVerifyRequest = (faceIds) => {
+const sendVerifyRequest = (faceIds, callback) => {
   let body = {'faceId1': faceIds[0], 'faceId2': faceIds[1]};
   let options = {
     uri: uriBaseVerify,
-    qs: params,
     body: JSON.stringify(body),
     headers: {
       'Content-Type': 'application/json',
       'Ocp-Apim-Subscription-Key' : subscriptionKey
     }
   };
-  return request.post(options);
+  return request.post(options, callback);
 }
 
 const verifyFace = (image1, image2, res, chip_id, student_id) => {
   let promise1 = detectFaceFromImage(image1);
   let promise2 = detectFaceFromImage(image2);
   Promise.all([promise1, promise2]).then((faceIds) => {
+    console.log(faceIds);
     if (faceIds[0] && faceIds[1]) {
-      let results = sendVerifyRequest(faceIds);
-      results.then((error, response, body) => {
+      let callback = (error, response, body) => {
         if (error) {
+          console.log("end1");
           res.send(false);
         } else {
-          chip_controller.exam_update_chip(res, chip_id, student_id, body.isIdentical)
+          let jsonObj = JSON.parse(body);
+
+          console.log("verify student:")
+          console.log(jsonObj.isIdentical)
+
+          fs.unlink(`./temp_images/${student_id}.jpg`, (err) => {
+            if (err) return next(err);
+          });
+          chip_controller.exam_update_chip(res, chip_id, student_id, jsonObj.isIdentical)
         }
-        // let jsonResponse = JSON.stringify(JSON.parse(body), null, '  ');
-        // console.log('JSON Response\n');
-        // console.log(jsonResponse);
-      })
+      }
+      sendVerifyRequest(faceIds, callback);
+
     } else {
+      console.log("end2");
       res.send(false)
     }
   });
