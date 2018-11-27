@@ -9,14 +9,14 @@ const PORT = 8080;
 const HOST = 'localhost';
 const MONGODB = 'mongodb://localhost:27017/cpen442_db';
 
-const user = require('./routes/student');
+const student = require('./routes/student');
 const exam = require('./routes/exam');
 
 // App
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use('/student', user);
+app.use('/student', student);
 app.use('/exam', exam);
 app.get('/', (req, res) => {
   res.send("Hello world\n");

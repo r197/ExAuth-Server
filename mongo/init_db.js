@@ -7,6 +7,6 @@ const db = conn.getDB("cpen442_db");
 db.dropDatabase();
 
 db.students.insert({
-  '_id': '11111111',
+  '_id': '12345678',
   'name': 'Test Student',
 });

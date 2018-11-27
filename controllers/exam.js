@@ -2,6 +2,7 @@
 
 const Exam = require('../models/exam');
 const Chip = require('../models/chip');
+const Student = require('../models/student');
 
 exports.exam_create = (req, res, next) => {
   let exam = new Exam(
@@ -53,7 +54,13 @@ exports.exam_check_chip =(req, res, next) => {
       if (exam.chips.indexOf(chip_id) > -1) {
         Chip.findById(chip_id, (err, chip) => {
           if (err) return next(err);
-          res.send({valid: chip.valid, message: "Student: " + chip.student_id});
+          if (chip.valid) {
+            Student.findById(chip.student_id, (err, student) => {
+              res.send({valid: true, student_id: chip.student_id, student_name: student.name});
+            })
+          } else {
+            res.send({valid: false, message: "Student was not authenticated"});
+          }
         });
       } else {
         res.send({valid: false, message: "The chip is not part of the selected exam"});

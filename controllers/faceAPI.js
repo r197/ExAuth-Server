@@ -27,8 +27,11 @@ const detectFaceFromImage = (image) => {
         return reject(error);
       }
       let jsonObj = JSON.parse(body);
-      console.log(jsonObj[0].faceId);
-      resolve(jsonObj[0].faceId);
+      if (jsonObj[0]) {
+        resolve(jsonObj[0].faceId);
+      } else {
+        reject();
+      }
     })
   });
 }
@@ -54,26 +57,18 @@ const verifyFace = (image1, image2, res, chip_id, student_id) => {
     if (faceIds[0] && faceIds[1]) {
       let callback = (error, response, body) => {
         if (error) {
-          console.log("end1");
           res.send(false);
         } else {
           let jsonObj = JSON.parse(body);
-
-          console.log("verify student:")
-          console.log(jsonObj.isIdentical)
-
-          fs.unlink(`./temp_images/${student_id}.jpg`, (err) => {
-            if (err) return next(err);
-          });
           chip_controller.exam_update_chip(res, chip_id, student_id, jsonObj.isIdentical)
         }
       }
       sendVerifyRequest(faceIds, callback);
-
     } else {
-      console.log("end2");
       res.send(false)
     }
+  }).catch(() => {
+    res.send(false);
   });
 }
 
