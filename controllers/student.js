@@ -20,10 +20,15 @@ exports.verify_student = (req, res, next) => {
     if (err) return next(err);
     if (exam) {
       if (exam.isOpen) {
-        fs.readFile(`./student_images/${student_id}.jpg`, function (err, saved_photo) {
-          if (err) return next(err);
-          FaceAPI.verifyFace(saved_photo, file, res, chip_id, student_id)
-        });
+        if (exam.chips.indexOf(chip_id) > -1) {
+          fs.readFile(`./student_images/${student_id}.jpg`,
+            function (err, saved_photo) {
+              if (err) return next(err);
+              FaceAPI.verifyFace(saved_photo, file, res, chip_id, student_id)
+            });
+        } else {
+          res.send({valid: false, message: "Chip is invalid"})
+        }
       } else {
         res.send({valid: false, message: "Exam is closed"})
       }

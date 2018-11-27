@@ -36,11 +36,15 @@ exports.exam_add_chip = (req, res, next) => {
     valid: false
   })
   chip.save((err) => {
-    if (err) return next(err);
+    if (err) {
+      res.send({valid: false, message: "Error adding chip"});
+    }
     console.log(req.body.exam_id)
     Exam.findByIdAndUpdate(req.body.exam_id,
       {$push: {chips: chip_id}}, (err, exam) => {
-        if (err) return next(err);
+        if (err) {
+          res.send({valid: false, message: "Error adding chip"});
+        }
         if (exam) {
           res.send({valid: true, message: "Successfully added chip to exam"});
         } else {
